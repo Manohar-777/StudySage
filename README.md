@@ -1,4 +1,5 @@
-# 📚 StudySage — AI Study Assistant (Multilingual RAG)
+# 📚 StudySage — AI Study Assistant (Multilingual RAG) 
+vist here #https://studysage-by-manohar.streamlit.app/
 
 **One-line pitch:** An AI study assistant where you upload your textbooks/lecture notes (PDFs) and ask questions in **Telugu (తెలుగు) or English**, and it answers *from your documents* with the exact source page cited.
 
