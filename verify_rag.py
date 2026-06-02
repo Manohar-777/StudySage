@@ -57,7 +57,7 @@ def run_test():
     # 3. Embeddings & FAISS Vectorstore
     print("Embedding chunks and building FAISS vector database (Gemini Embedding API)...")
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
         vectorstore = FAISS.from_documents(chunks, embeddings)
         print("✓ Vectorstore built successfully.")
     except Exception as e:
@@ -65,9 +65,9 @@ def run_test():
         sys.exit(1)
         
     # 4. LLM & Retrieval Setup
-    print("Setting up LLM and RetrievalQA (Gemini-1.5-Flash)...")
+    print("Setting up LLM and RetrievalQA (Gemini-2.5-Flash)...")
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.2)
+        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
         retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
         
         PROMPT = PromptTemplate(
