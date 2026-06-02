@@ -57,7 +57,7 @@ def run_test():
     # 3. Embeddings & FAISS Vectorstore
     print("Embedding chunks and building FAISS vector database (Gemini Embedding API)...")
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
         vectorstore = FAISS.from_documents(chunks, embeddings)
         print("✓ Vectorstore built successfully.")
     except Exception as e:

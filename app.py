@@ -185,7 +185,7 @@ if active_api_key:
     os.environ["GOOGLE_API_KEY"] = active_api_key
     # Check if we should initialize embeddings & LLM
     try:
-        EMBEDDINGS = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        EMBEDDINGS = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
         LLM = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.2)
         MODELS_LOADED = True
     except Exception as e:
