@@ -1,4 +1,5 @@
 import os
+import time
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -9,6 +10,48 @@ from langchain_community.vectorstores import FAISS
 from langchain_classic.chains import RetrievalQA
 from langchain_core.prompts import PromptTemplate
 from langchain_core.documents import Document
+from langchain_core.embeddings import Embeddings
+
+class RateLimitedEmbeddings(Embeddings):
+    """Wrapper class for GoogleGenerativeAIEmbeddings to respect API rate limits."""
+    def __init__(self, base_embeddings, requests_per_minute=15):
+        self.base_embeddings = base_embeddings
+        self.requests_per_minute = requests_per_minute
+        self.delay = 60.0 / requests_per_minute
+
+    def embed_documents(self, texts):
+        embeddings = []
+        batch_size = 5  # Embed 5 chunks at a time (safe threshold for free tier)
+        
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i:i+batch_size]
+            success = False
+            retries = 5
+            
+            while not success and retries > 0:
+                try:
+                    batch_embeddings = self.base_embeddings.embed_documents(batch)
+                    embeddings.extend(batch_embeddings)
+                    success = True
+                except Exception as e:
+                    err_str = str(e).lower()
+                    if "429" in err_str or "resource_exhausted" in err_str or "quota" in err_str:
+                        st.warning(f"⚠️ Gemini API rate limit hit. Pausing 30 seconds to recover... (Retries remaining: {retries})")
+                        time.sleep(30)
+                        retries -= 1
+                    else:
+                        raise e
+                        
+            if not success:
+                raise Exception("Failed to embed documents due to persistent Gemini API rate limits. Try increasing the chunk size in settings to generate fewer chunks.")
+            
+            # Avoid hitting rate limit on subsequent requests
+            time.sleep(self.delay)
+            
+        return embeddings
+
+    def embed_query(self, text):
+        return self.base_embeddings.embed_query(text)
 
 # Setup page layout and branding
 st.set_page_config(
@@ -262,7 +305,8 @@ def build_vectorstore(pdf_paths, size, overlap):
     chunks = splitter.split_documents(all_docs)
     
     # Embed and index
-    vectorstore = FAISS.from_documents(chunks, EMBEDDINGS)
+    rate_limited_embeddings = RateLimitedEmbeddings(EMBEDDINGS)
+    vectorstore = FAISS.from_documents(chunks, rate_limited_embeddings)
     return vectorstore
 
 # Perform ingestion
