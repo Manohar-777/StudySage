@@ -1,0 +1,12 @@
+streamlit
+langchain
+langchain-community
+langchain-google-genai
+faiss-cpu
+pypdf
+python-dotenv
+tiktoken
+# --- optional OCR for scanned/image PDFs ---
+pytesseract
+pdf2image
+pillow
