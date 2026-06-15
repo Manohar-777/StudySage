@@ -6,6 +6,8 @@ vist here #https://studysage-by-manohar.streamlit.app/
 This project demonstrates a production-grade **Retrieval-Augmented Generation (RAG)** pipeline designed to solve LLM hallucination problems for custom user data. It implements semantic text chunking, local vector storage, context-based prompting, and bilingual query processing.
 
 ---
+<img width="1918" height="966" alt="image" src="https://github.com/user-attachments/assets/5fe7052e-1bb6-4a08-b31c-fa3ceca76c72" />
+
 
 ## 🎯 JD Alignment Checklist
 
